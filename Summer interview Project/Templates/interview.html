@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Mock Interview - Round</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons Link (Fixes hidden icon issues) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background-color: #f4f6f9; font-family: 'Segoe UI', sans-serif; }
+        .interview-card { background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); padding: 40px; margin-top: 60px; }
+        .btn-next { background-color: #2563eb; color: white; border-radius: 8px; font-weight: 600; padding: 10px 30px; border: none; }
+        .btn-next:hover { background-color: #1d4ed8; }
+        .btn-mic { background-color: #dc2626; color: white; border-radius: 8px; font-weight: 600; padding: 10px 25px; border: none; transition: 0.3s; }
+        .btn-mic:hover { background-color: #b91c1c; }
+        .btn-mic.recording { background-color: #22c55e; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="interview-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="badge bg-secondary fs-6">Question {{ qno }} of 10</span>
+                </div>
+                
+                <!-- AI Question -->
+                <h3 class="mb-4" style="color: #1e293b; line-height: 1.4;">{{ question }}</h3>
+                
+                <form action="/interview" method="POST" id="interviewForm">
+                    <div class="mb-3">
+                        <label for="answer" class="form-label fw-semibold">Your Answer:</label>
+                        <textarea class="form-control" id="answer" name="answer" rows="4" placeholder="Type your answer here or click the button below to start speaking..." required></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <!-- Redesigned Mic Button with Font Awesome SVG Vector Icon -->
+                        <button type="button" class="btn btn-mic" id="micBtn">
+                            <i class="fa-solid fa-microphone me-2" id="micIcon"></i> <span id="btnText">Start Speaking</span>
+                        </button>
+                        <button type="submit" class="btn btn-next">Next Question <i class="fa-solid fa-arrow-right ms-2"></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript Voice Logic -->
+<script>
+    const micBtn = document.getElementById('micBtn');
+    const micIcon = document.getElementById('micIcon');
+    const btnText = document.getElementById('btnText');
+    const answerArea = document.getElementById('answer');
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    
+    if (!SpeechRecognition) {
+        alert("Microphone Error: Your browser does not support Voice input. Please use Google Chrome!");
+        micBtn.style.display = 'none';
+    } else {
+        const recognition = new SpeechRecognition();
+        recognition.continuous = true; 
+        recognition.interimResults = false; 
+        recognition.lang = 'en-US'; 
+
+        let isRecording = false;
+
+        micBtn.addEventListener('click', () => {
+            if (!isRecording) {
+                try {
+                    recognition.start();
+                    btnText.textContent = "Stop Speaking";
+                    micIcon.className = "fa-solid fa-circle-stop me-2"; // Icon changes to stop symbol
+                    micBtn.classList.add('recording');
+                    isRecording = true;
+                    answerArea.placeholder = "Listening... Speak into your mic now.";
+                } catch (err) {
+                    alert("Start Error: " + err.message);
+                }
+            } else {
+                recognition.stop();
+                btnText.textContent = "Start Speaking";
+                micIcon.className = "fa-solid fa-microphone me-2"; // Reverts back to microphone icon
+                micBtn.classList.remove('recording');
+                isRecording = false;
+            }
+        });
+
+        recognition.onresult = (event) => {
+            const currentResultIndex = event.resultIndex;
+            const transcript = event.results[currentResultIndex][0].transcript;
+            answerArea.value += transcript + " ";
+        };
+
+        recognition.onerror = (event) => {
+            alert("Speech Error Detected: " + event.error + "\n\nFix: Check browser microphone settings or permissions!");
+            recognition.stop();
+            btnText.textContent = "Start Speaking";
+            micIcon.className = "fa-solid fa-microphone me-2";
+            micBtn.classList.remove('recording');
+            isRecording = false;
+        };
+    }
+</script>
+
+</body>
+</html>
