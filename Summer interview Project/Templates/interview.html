@@ -1,113 +1,341 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Mock Interview - Round</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome Icons Link (Fixes hidden icon issues) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body { background-color: #f4f6f9; font-family: 'Segoe UI', sans-serif; }
-        .interview-card { background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); padding: 40px; margin-top: 60px; }
-        .btn-next { background-color: #2563eb; color: white; border-radius: 8px; font-weight: 600; padding: 10px 30px; border: none; }
-        .btn-next:hover { background-color: #1d4ed8; }
-        .btn-mic { background-color: #dc2626; color: white; border-radius: 8px; font-weight: 600; padding: 10px 25px; border: none; transition: 0.3s; }
-        .btn-mic:hover { background-color: #b91c1c; }
-        .btn-mic.recording { background-color: #22c55e; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Interview Coach</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+
+body{
+    background: linear-gradient(135deg,#dbeafe,#f0f9ff,#e0e7ff);
+    min-height:100vh;
+    font-family:'Segoe UI',sans-serif;
+}
+
+.interview-card{
+    background:rgba(255,255,255,0.85);
+    backdrop-filter:blur(12px);
+    border-radius:25px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.1);
+    padding:40px;
+    margin-top:50px;
+}
+
+.ai-avatar{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    border:4px solid #2563eb;
+}
+
+.question-box{
+    background:#eff6ff;
+    padding:25px;
+    border-left:5px solid #2563eb;
+    border-radius:12px;
+    animation:fadeIn .5s ease;
+}
+
+@keyframes fadeIn{
+from{
+opacity:0;
+transform:translateY(15px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+.btn-next{
+    background:#2563eb;
+    color:white;
+    border:none;
+    padding:12px 30px;
+    border-radius:10px;
+    font-weight:600;
+}
+
+.btn-next:hover{
+    background:#1d4ed8;
+}
+
+.btn-mic{
+    background:#dc2626;
+    color:white;
+    border:none;
+    padding:12px 25px;
+    border-radius:10px;
+    font-weight:600;
+}
+
+.btn-mic:hover{
+    background:#b91c1c;
+}
+
+.btn-mic.recording{
+    background:#22c55e;
+    animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+0%{opacity:1;}
+50%{opacity:.5;}
+100%{opacity:1;}
+}
+
+textarea{
+    resize:none;
+}
+
+.timer-box{
+    font-size:18px;
+    font-weight:600;
+}
+
+.progress{
+    height:18px;
+    border-radius:20px;
+}
+
+.progress-bar{
+    font-weight:600;
+}
+
+</style>
 </head>
+
 <body>
 
 <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="interview-card">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <span class="badge bg-secondary fs-6">Question {{ qno }} of 10</span>
-                </div>
-                
-                <!-- AI Question -->
-                <h3 class="mb-4" style="color: #1e293b; line-height: 1.4;">{{ question }}</h3>
-                
-                <form action="/interview" method="POST" id="interviewForm">
-                    <div class="mb-3">
-                        <label for="answer" class="form-label fw-semibold">Your Answer:</label>
-                        <textarea class="form-control" id="answer" name="answer" rows="4" placeholder="Type your answer here or click the button below to start speaking..." required></textarea>
-                    </div>
 
-                    <div class="d-flex justify-content-between align-items-center mt-4">
-                        <!-- Redesigned Mic Button with Font Awesome SVG Vector Icon -->
-                        <button type="button" class="btn btn-mic" id="micBtn">
-                            <i class="fa-solid fa-microphone me-2" id="micIcon"></i> <span id="btnText">Start Speaking</span>
-                        </button>
-                        <button type="submit" class="btn btn-next">Next Question <i class="fa-solid fa-arrow-right ms-2"></i></button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+<div class="row justify-content-center">
+
+<div class="col-lg-8">
+
+<div class="interview-card">
+
+<div class="text-center mb-4">
+
+<img
+src="https://cdn-icons-png.flaticon.com/512/4712/4712027.png"
+class="ai-avatar"
+alt="AI Coach">
+
+<h3 class="mt-3 text-primary">
+AI Interview Coach
+</h3>
+
+<p class="text-muted">
+Resume Based Smart Interview
+</p>
+
 </div>
 
-<!-- JavaScript Voice Logic -->
+<div class="progress mb-4">
+
+<div
+class="progress-bar bg-primary"
+role="progressbar"
+style="width: {{ (qno*10) }}%;">
+
+Question {{ qno }}/10
+
+</div>
+
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+<span class="badge bg-primary fs-6">
+Question {{ qno }} of 10
+</span>
+
+<div class="alert alert-warning mb-0 py-2 px-3 timer-box">
+
+⏳ Time Left:
+<span id="timer">60</span>s
+
+</div>
+
+</div>
+
+<div class="question-box mb-4">
+
+<h4 style="line-height:1.7;color:#1e293b;">
+{{ question }}
+</h4>
+
+</div>
+
+<form action="/interview" method="POST">
+
+<div class="mb-3">
+
+<label class="form-label fw-bold">
+Your Answer
+</label>
+
+<textarea
+class="form-control"
+id="answer"
+name="answer"
+rows="5"
+placeholder="Type your answer here or use voice input..."
+required></textarea>
+
+</div>
+
+<div class="d-flex justify-content-between align-items-center mt-4">
+
+<button
+type="button"
+class="btn btn-mic"
+id="micBtn">
+
+<i class="fa-solid fa-microphone me-2" id="micIcon"></i>
+
+<span id="btnText">
+Start Speaking
+</span>
+
+</button>
+
+<button type="submit" class="btn btn-next">
+
+Next Question
+
+<i class="fa-solid fa-arrow-right ms-2"></i>
+
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 <script>
-    const micBtn = document.getElementById('micBtn');
-    const micIcon = document.getElementById('micIcon');
-    const btnText = document.getElementById('btnText');
-    const answerArea = document.getElementById('answer');
 
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    
-    if (!SpeechRecognition) {
-        alert("Microphone Error: Your browser does not support Voice input. Please use Google Chrome!");
-        micBtn.style.display = 'none';
-    } else {
-        const recognition = new SpeechRecognition();
-        recognition.continuous = true; 
-        recognition.interimResults = false; 
-        recognition.lang = 'en-US'; 
+let time = 60;
 
-        let isRecording = false;
+setInterval(() => {
 
-        micBtn.addEventListener('click', () => {
-            if (!isRecording) {
-                try {
-                    recognition.start();
-                    btnText.textContent = "Stop Speaking";
-                    micIcon.className = "fa-solid fa-circle-stop me-2"; // Icon changes to stop symbol
-                    micBtn.classList.add('recording');
-                    isRecording = true;
-                    answerArea.placeholder = "Listening... Speak into your mic now.";
-                } catch (err) {
-                    alert("Start Error: " + err.message);
-                }
-            } else {
-                recognition.stop();
-                btnText.textContent = "Start Speaking";
-                micIcon.className = "fa-solid fa-microphone me-2"; // Reverts back to microphone icon
-                micBtn.classList.remove('recording');
-                isRecording = false;
-            }
-        });
+if(time > 0){
 
-        recognition.onresult = (event) => {
-            const currentResultIndex = event.resultIndex;
-            const transcript = event.results[currentResultIndex][0].transcript;
-            answerArea.value += transcript + " ";
-        };
+time--;
 
-        recognition.onerror = (event) => {
-            alert("Speech Error Detected: " + event.error + "\n\nFix: Check browser microphone settings or permissions!");
-            recognition.stop();
-            btnText.textContent = "Start Speaking";
-            micIcon.className = "fa-solid fa-microphone me-2";
-            micBtn.classList.remove('recording');
-            isRecording = false;
-        };
-    }
+document.getElementById("timer").innerText = time;
+
+}
+
+},1000);
+
+const micBtn = document.getElementById('micBtn');
+const micIcon = document.getElementById('micIcon');
+const btnText = document.getElementById('btnText');
+const answerArea = document.getElementById('answer');
+
+const SpeechRecognition =
+window.SpeechRecognition ||
+window.webkitSpeechRecognition;
+
+if(!SpeechRecognition){
+
+alert(
+"Voice Recognition not supported. Please use Google Chrome."
+);
+
+micBtn.style.display="none";
+
+}else{
+
+const recognition = new SpeechRecognition();
+
+recognition.continuous = true;
+recognition.interimResults = false;
+recognition.lang = 'en-US';
+
+let isRecording = false;
+
+micBtn.addEventListener('click',()=>{
+
+if(!isRecording){
+
+recognition.start();
+
+btnText.textContent = "Stop Speaking";
+
+micIcon.className =
+"fa-solid fa-circle-stop me-2";
+
+micBtn.classList.add("recording");
+
+answerArea.placeholder =
+"Listening... Speak now.";
+
+isRecording = true;
+
+}else{
+
+recognition.stop();
+
+btnText.textContent =
+"Start Speaking";
+
+micIcon.className =
+"fa-solid fa-microphone me-2";
+
+micBtn.classList.remove("recording");
+
+isRecording = false;
+
+}
+
+});
+
+recognition.onresult = (event)=>{
+
+const transcript =
+event.results[event.resultIndex][0].transcript;
+
+answerArea.value += transcript + " ";
+
+};
+
+recognition.onerror = (event)=>{
+
+alert("Speech Error: " + event.error);
+
+recognition.stop();
+
+btnText.textContent =
+"Start Speaking";
+
+micIcon.className =
+"fa-solid fa-microphone me-2";
+
+micBtn.classList.remove("recording");
+
+isRecording = false;
+
+};
+
+}
+
 </script>
 
 </body>
 </html>
+```
