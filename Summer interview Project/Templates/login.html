@@ -1,25 +1,148 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>AI Interview Coach</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AI Interview Coach</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#2563eb,#3b82f6,#60a5fa);
+}
+
+.container{
+    width:90%;
+    max-width:500px;
+    background:white;
+    padding:40px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+    text-align:center;
+}
+
+.logo{
+    font-size:60px;
+    margin-bottom:10px;
+}
+
+h1{
+    color:#1e293b;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    color:#64748b;
+    margin-bottom:30px;
+}
+
+input[type="text"]{
+    width:100%;
+    padding:14px;
+    border:2px solid #dbeafe;
+    border-radius:10px;
+    margin-bottom:20px;
+    font-size:16px;
+}
+
+.upload-box{
+    border:2px dashed #60a5fa;
+    padding:25px;
+    border-radius:15px;
+    margin-bottom:20px;
+    background:#f8fafc;
+}
+
+input[type="file"]{
+    width:100%;
+}
+
+button{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    background:#2563eb;
+    color:white;
+    font-size:17px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#1d4ed8;
+    transform:scale(1.02);
+}
+
+.features{
+    margin-top:25px;
+    text-align:left;
+}
+
+.features p{
+    margin:8px 0;
+    color:#475569;
+}
+
+</style>
 </head>
+
 <body>
 
-<h1>AI Interview Coach</h1>
+<div class="container">
 
-<form action="/interview" method="POST" enctype="multipart/form-data">
+    <div class="logo">🤖</div>
 
-    <input type="text" name="username" placeholder="Enter Your Name">
+    <h1>AI Interview Coach</h1>
 
-    <br><br>
+    <p class="subtitle">
+        Upload your resume and get personalized AI-generated interview questions.
+    </p>
 
-    <input type="file" name="resume" accept=".pdf">
+    <form action="/interview" method="POST" enctype="multipart/form-data">
 
-    <br><br>
+        <input
+            type="text"
+            name="username"
+            placeholder="Enter Your Name"
+            required
+        >
 
-    <button type="submit">Start Interview</button>
+        <div class="upload-box">
+            <input
+                type="file"
+                name="resume"
+                accept=".pdf"
+                required
+            >
+        </div>
 
-</form>
+        <button type="submit">
+            🚀 Start Interview
+        </button>
+
+    </form>
+
+    <div class="features">
+        <p>✅ Resume-Based Questions</p>
+        <p>✅ AI Evaluation</p>
+        <p>✅ Confidence Analysis</p>
+        <p>✅ Personalized Feedback</p>
+    </div>
+
+</div>
 
 </body>
 </html>
