@@ -3,7 +3,11 @@ import os
 import pypdf
 from google import genai
 
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    template_folder='Templates',
+    static_folder='Static'
+)
 app.secret_key = "super_secret_interview_key_123"
 
 UPLOAD_FOLDER = 'uploads'
