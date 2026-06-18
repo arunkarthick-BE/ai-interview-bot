@@ -11,7 +11,9 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # Gemini Client Initialize
-client = genai.Client()
+client = genai.Client(
+    api_key=os.environ.get("GOOGLE_API_KEY")
+)
 
 def extract_text_from_pdf(pdf_path):
     try:
